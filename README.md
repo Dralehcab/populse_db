@@ -37,4 +37,3 @@ Add the directory python/populse_db in $PATH, or open this directory inside a te
 	python2 Test.py  # With Python2
 	
 	python3 Test.py  # With Python3
-
