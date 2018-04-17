@@ -482,8 +482,6 @@ class Database:
             return
         if origin not in [TAG_ORIGIN_USER, TAG_ORIGIN_RAW]:
             return
-        if self.get_tag(name).origin == origin:
-            return
 
         session = self.session_maker()
         tags = session.query(self.classes["tag"]).filter(
@@ -516,8 +514,6 @@ class Database:
                             TAG_TYPE_DATETIME, TAG_TYPE_DATE,
                             TAG_TYPE_STRING, TAG_TYPE_INTEGER,
                             TAG_TYPE_FLOAT, TAG_TYPE_TIME]:
-            return
-        if self.get_tag(name).type == tag_type:
             return
         if self.get_tag(name).type == tag_type:
             return
@@ -689,8 +685,6 @@ class Database:
             return
         if self.get_tag(name).unit == unit:
             return
-        if self.get_tag(name).unit == unit:
-            return
 
         session = self.session_maker()
         tags = session.query(self.classes["tag"]).filter(
@@ -717,8 +711,6 @@ class Database:
             return
         if not isinstance(description, str):
             return
-        if self.get_tag(name).description == description:
-            return
 
         session = self.session_maker()
         tags = session.query(self.classes["tag"]).filter(
@@ -744,8 +736,6 @@ class Database:
         if self.get_tag(name) is None:
             return
         if not isinstance(visible, bool):
-            return
-        if self.get_tag(name).visible == visible:
             return
 
         session = self.session_maker()
@@ -959,8 +949,6 @@ class Database:
             return
         if not self.check_type_value(new_value, self.get_tag(tag).type):
             return
-        if self.get_current_value(scan, tag) == new_value:
-            return
 
         if self.is_tag_list(tag):
             # The scan has a list type, the values are reset in the tag
@@ -1007,8 +995,6 @@ class Database:
             return False
         if self.get_scan(scan) is None:
             return False
-        if not self.is_value_modified(scan, tag):
-            return True
 
         if self.is_tag_list(tag):
             # The scan has a list type, the values are reset in the tag
