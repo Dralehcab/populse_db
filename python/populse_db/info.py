@@ -30,7 +30,10 @@ The meta-data storage and query system for Populse.
 '''
 # BrainVISA project
 PROJECT = 'populse'
+<<<<<<< 3afdf162b1a60d0f2cdce518871f8621ae0ba68d
 brainvisa_build_model = 'pure_python'
+=======
+>>>>>>> Closes #3
 
 # Other values used in setup.py
 ORGANISATION = 'populse'
