@@ -519,6 +519,8 @@ class Database:
             return
         if self.get_tag(name).type == tag_type:
             return
+        if self.get_tag(name).type == tag_type:
+            return
 
         session = self.session_maker()
         tags = session.query(self.classes["tag"])\
@@ -684,6 +686,8 @@ class Database:
             return
         if unit not in [TAG_UNIT_MHZ, TAG_UNIT_DEGREE, TAG_UNIT_HZPIXEL,
                         TAG_UNIT_MM, TAG_UNIT_MS] and unit is not None:
+            return
+        if self.get_tag(name).unit == unit:
             return
         if self.get_tag(name).unit == unit:
             return
