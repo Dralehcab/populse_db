@@ -5,7 +5,14 @@ python:
   - '3.4'
   - '2.7'
 
+services:
+  - postgresql
+
+before_script:
+  - psql -c 'create database test_populse_db;' -U postgres
+
 install:
-  - python setup.py install
+    - pip install psycopg2
+    - python setup.py install
 
 script: python -m populse_db.test
