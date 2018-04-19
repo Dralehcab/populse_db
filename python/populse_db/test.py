@@ -1,8 +1,12 @@
+from __future__ import print_function
+
 import os
 import shutil
 import unittest
 import tempfile
 from datetime import datetime
+
+import sqlalchemy
 
 from populse_db.database import Database
 from populse_db.database_model import (create_database, TAG_ORIGIN_BUILTIN,
@@ -746,3 +750,16 @@ class TestDatabaseMethods(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main(exit=False)
+    test_postgresql = True
+    try:
+        engine = sqlalchemy.create_engine('postgresql://postgres@/test_populse_db')
+        engine.connect()
+    except ImportError as e:
+        test_postgresql = False
+    except sqlalchemy.exc.OperationalError as e:
+        test_postgresql = False
+    if test_postgresql:
+        print('Running postgresql tests')
+        TestDatabaseMethods.url = 'postgresql://postgres@/test_populse_db' 
+    else:
+        print('Skipping postgresql tests because:', e)
