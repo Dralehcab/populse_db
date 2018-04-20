@@ -774,4 +774,19 @@ def load_tests(loader, standard_tests, pattern):
     return suite
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(exit=False)
+    test_postgresql = True
+    try:
+        engine = sqlalchemy.create_engine('postgresql://postgres@/test_populse_db')
+        engine.connect()
+    except ImportError as e:
+        test_postgresql = False
+        exception = e
+    except sqlalchemy.exc.OperationalError as e:
+        test_postgresql = False
+        exception = e
+    if test_postgresql:
+        print('Running postgresql tests')
+        TestDatabaseMethods.url = 'postgresql://postgres@/test_populse_db' 
+    else:
+        print('Skipping postgresql tests because:', exception)
