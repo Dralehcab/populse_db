@@ -748,20 +748,30 @@ class TestDatabaseMethods(unittest.TestCase):
         scan = database.get_path("scan1")
         self.assertEqual(scan.checksum, "159abc")
 
+class TestDatabaseWithPostgresql(TestDatabaseMethods):
+    @classmethod
+    def setUpClass(cls):
+        postgresql_error = None
+        try:
+            engine = sqlalchemy.create_engine('postgresql://postgres@/test_populse_db')
+            engine.connect()
+        except ImportError as e:
+            postgresql_error = str(e)
+        except sqlalchemy.exc.OperationalError as e:
+            postgresql_error = str(e)
+        if postgresql_error:
+            raise unittest.SkipTest(str(postgresql_error))
+        
+        cls.url = 'postgresql://postgres@/test_populse_db' 
+
+
+def load_tests(loader, standard_tests, pattern):
+    suite = unittest.TestSuite()
+    tests = loader.loadTestsFromTestCase(TestDatabaseMethods)
+    suite.addTests(tests)
+    tests = loader.loadTestsFromTestCase(TestDatabaseWithPostgresql)
+    suite.addTests(tests)
+    return suite
+
 if __name__ == '__main__':
-    unittest.main(exit=False)
-    test_postgresql = True
-    try:
-        engine = sqlalchemy.create_engine('postgresql://postgres@/test_populse_db')
-        engine.connect()
-    except ImportError as e:
-        test_postgresql = False
-        exception = e
-    except sqlalchemy.exc.OperationalError as e:
-        test_postgresql = False
-        exception = e
-    if test_postgresql:
-        print('Running postgresql tests')
-        TestDatabaseMethods.url = 'postgresql://postgres@/test_populse_db' 
-    else:
-        print('Skipping postgresql tests because:', exception)
+    unittest.main()
