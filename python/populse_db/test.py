@@ -756,10 +756,12 @@ if __name__ == '__main__':
         engine.connect()
     except ImportError as e:
         test_postgresql = False
+        exception = e
     except sqlalchemy.exc.OperationalError as e:
         test_postgresql = False
+        exception = e
     if test_postgresql:
         print('Running postgresql tests')
         TestDatabaseMethods.url = 'postgresql://postgres@/test_populse_db' 
     else:
-        print('Skipping postgresql tests because:', e)
+        print('Skipping postgresql tests because:', exception)
