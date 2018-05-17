@@ -1,5 +1,21 @@
-from sqlalchemy import (Column, Table, ForeignKeyConstraint, String,
+from ast import literal_eval
+
+from sqlalchemy import (Column, Table, ForeignKeyConstraint, String, Unicode,
                         Enum, Integer, MetaData, create_engine, Float, Date, DateTime, Time)
+import sqlalchemy.types
+
+class ListType(sqlalchemy.types.TypeDecorator):
+    impl = String
+    
+    def process_bind_param(self, value, dialect):
+        if value is None:
+            return None
+        return repr(value)
+
+    def process_result_value(self, value, dialect):
+        if value is None:
+            return None
+        return literal_eval(value)
 
 # Tag origin
 TAG_ORIGIN_BUILTIN = "builtin"
@@ -25,17 +41,17 @@ ALL_TYPES = [TAG_TYPE_LIST_STRING, TAG_TYPE_LIST_INTEGER, TAG_TYPE_LIST_FLOAT, T
 
 TYPE_TO_COLUMN = {}
 TYPE_TO_COLUMN[TAG_TYPE_INTEGER] = Integer
-TYPE_TO_COLUMN[TAG_TYPE_LIST_INTEGER] = Integer
+TYPE_TO_COLUMN[TAG_TYPE_LIST_INTEGER] = ListType
 TYPE_TO_COLUMN[TAG_TYPE_FLOAT] = Float
-TYPE_TO_COLUMN[TAG_TYPE_LIST_FLOAT] = Float
+TYPE_TO_COLUMN[TAG_TYPE_LIST_FLOAT] = ListType
 TYPE_TO_COLUMN[TAG_TYPE_DATE] = Date
-TYPE_TO_COLUMN[TAG_TYPE_LIST_DATE] = Date
+TYPE_TO_COLUMN[TAG_TYPE_LIST_DATE] = ListType
 TYPE_TO_COLUMN[TAG_TYPE_DATETIME] = DateTime
-TYPE_TO_COLUMN[TAG_TYPE_LIST_DATETIME] = DateTime
+TYPE_TO_COLUMN[TAG_TYPE_LIST_DATETIME] = ListType
 TYPE_TO_COLUMN[TAG_TYPE_TIME] = Time
-TYPE_TO_COLUMN[TAG_TYPE_LIST_TIME] = Time
+TYPE_TO_COLUMN[TAG_TYPE_LIST_TIME] = ListType
 TYPE_TO_COLUMN[TAG_TYPE_STRING] = String
-TYPE_TO_COLUMN[TAG_TYPE_LIST_STRING] = String
+TYPE_TO_COLUMN[TAG_TYPE_LIST_STRING] = ListType
 
 # Tag unit
 TAG_UNIT_MS = "ms"
