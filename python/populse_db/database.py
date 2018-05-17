@@ -112,8 +112,6 @@ class Database:
         self.string_engine = string_engine
         self.table_classes = {}
         self.tags = {}
-        self.paths = {}
-        self.initial_paths = {}
         self.names = {}
 
         # SQLite database: we create it if it does not exist
@@ -219,9 +217,6 @@ class Database:
                 CURRENT_TABLE, "\"" + self.tag_name_to_column_name(name) + "\"",
                 column_type))
 
-        self.paths.clear()
-        self.initial_paths.clear()
-
         self.unsaved_modifications = True
 
         # Redefinition of the table classes
@@ -303,9 +298,6 @@ class Database:
         self.session.execute("INSERT INTO " + CURRENT_TABLE + " SELECT " + columns +
                         " FROM current_backup")
         self.session.execute("DROP TABLE current_backup")
-
-        self.paths.clear()
-        self.initial_paths.clear()
 
         self.tags.pop(name, None)
         self.session.delete(tag_row)
@@ -588,14 +580,9 @@ class Database:
         :param path: path name
         :return The path row if the path exists, None otherwise
         """
-
-        if path in self.paths:
-            return self.paths[path]
-        else:
-            path_row = self.session.query(self.table_classes[CURRENT_TABLE]).filter(
-        self.table_classes[CURRENT_TABLE].name == path).first()
-            self.paths[path] = path_row
-            return path_row
+        path_row = self.session.query(self.table_classes[CURRENT_TABLE]).filter(
+            self.table_classes[CURRENT_TABLE].name == path).first()
+        return path_row
 
     def get_initial_path(self, path):
         """
@@ -604,13 +591,9 @@ class Database:
         :return The initial path row if the path exists, None otherwise
         """
 
-        if path in self.initial_paths:
-            return self.initial_paths[path]
-        else:
-            path_row = self.session.query(self.table_classes[INITIAL_TABLE]).filter(
-        self.table_classes[INITIAL_TABLE].name == path).first()
-            self.initial_paths[path] = path_row
-            return path_row
+        path_row = self.session.query(self.table_classes[INITIAL_TABLE]).filter(
+            self.table_classes[INITIAL_TABLE].name == path).first()
+        return path_row
 
     def get_paths_names(self):
         """
@@ -651,8 +634,6 @@ class Database:
                 self.session.query(self.table_classes[table_class]).filter(
                     self.table_classes[table_class].name == path).delete()
 
-        self.paths.pop(path, None)
-        self.initial_paths.pop(path, None)
         self.session.flush()
         self.unsaved_modifications = True
 
@@ -676,8 +657,6 @@ class Database:
         self.session.add(current)
         self.session.add(initial)
         self.session.flush()
-        self.paths[path] = current
-        self.initial_paths[path] = initial
         self.unsaved_modifications = True
 
     """ UTILS """
